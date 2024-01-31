@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layered Image Display</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevents scrolling if images go beyond the viewport */
+        }
+        #imageContainer {
+            position: relative;
+            width: 2492px;
+            height: 872px;
+            margin: auto; /* Center the container */
+        }
+        .imageLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        /* Toast container */
+        #toastContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        /* Toast message */
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 16px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div id="toastContainer"></div>
+    <div id="imageContainer"></div>
+    <script src="script.js"></script>
+</body>
+</html>
