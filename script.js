@@ -47,14 +47,25 @@ document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = 2492;
-    canvas.height = 872;
+    //canvas.width = 2492;
+    //canvas.height = 872;
     canvas.style.position = 'absolute';
     canvas.style.top = '0';
     canvas.style.left = '0';
     canvas.style.pointerEvents = 'none'; // Ignore mouse events on the canvas
 
     document.body.appendChild(canvas);
+
+    // Function to adjust canvas size
+    function resizeCanvas() {
+        const containerRect = imageContainer.getBoundingClientRect();
+        canvas.width = containerRect.width;
+        canvas.height = containerRect.height;
+    }
+
+    // Call resizeCanvas on load and window resize
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     // Preload overlay images
     const overlays = overlayImageFilenames.map(filename => {
@@ -73,16 +84,31 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function setupMouseHover() {
+        // imageContainer.addEventListener('mousemove', function(e) {
+        //     const rect = imageContainer.getBoundingClientRect();
+        //     const scaleX = canvas.width / rect.width; // Calculate the scale factor for X
+        //     const scaleY = canvas.height / rect.height; // Calculate the scale factor for Y
+        //     const x = (e.clientX - rect.left) * scaleX; // Translate mouse x
+        //     const y = (e.clientY - rect.top) * scaleY; // Translate mouse y
+        //     checkPixelColor(x, y);
+        //     console.log(x, y);
+        // });
+
         imageContainer.addEventListener('mousemove', function(e) {
             const rect = imageContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Determine the scaling mode: width-based or height-based
+            const scale = Math.min(rect.width / canvas.width, rect.height / canvas.height);
+            const offsetX = (rect.width - canvas.width * scale) / 2; // Centering offset for width
+            const offsetY = (rect.height - canvas.height * scale) / 2; // Centering offset for height
+            const x = (e.clientX - rect.left - offsetX) / scale;
+            const y = (e.clientY - rect.top - offsetY) / scale;
             checkPixelColor(x, y);
+            //console.log(x, y);
         });
 
         // Setup click event listener
         imageContainer.addEventListener('click', function() {
-            if (lastNonTransparentImageIndex >= 0) { // Ensure there's a last hovered image
+            if (lastNonTransparentImageIndex >= 0) {
                 var filename = overlayImageFilenames[lastNonTransparentImageIndex];
                 console.log(filename);
                 showToast(filename); // Show toast with the filename
@@ -90,27 +116,81 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // function checkPixelColor(x, y) {
+    //     let isNonTransparentFound = false;
+    //     for (let i = overlays.length - 1; i >= 0; i--) {
+    //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //         ctx.drawImage(overlays[i], 0, 0);
+    //         const pixel = ctx.getImageData(x, y, 1, 1).data;
+    //         if (!isNonTransparentFound && pixel[3] !== 0) {
+    //             document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
+    //             isNonTransparentFound = true;
+    //             lastNonTransparentImageIndex = i; // Update the last non-transparent image index
+    //         } else {
+    //             document.querySelectorAll('.overlayImage')[i].style.display = 'none'; // Hide this image if not hovered
+    //         }
+    //     }
+
+    //     // If no non-transparent pixel was found, reset the last index
+    //     if (!isNonTransparentFound) {
+    //         lastNonTransparentImageIndex = -1;
+    //     }
+    // }
+
     function checkPixelColor(x, y) {
         let isNonTransparentFound = false;
+        // const canvas = document.createElement('canvas');
+        // const ctx = canvas.getContext('2d');
+        const containerRect = imageContainer.getBoundingClientRect();
+
+        canvas.width = containerRect.width;
+        canvas.height = containerRect.height;
+
         for (let i = overlays.length - 1; i >= 0; i--) {
+            // Clear the off-screen canvas for each overlay
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(overlays[i], 0, 0);
-            const pixel = ctx.getImageData(x, y, 1, 1).data;
-            if (!isNonTransparentFound && pixel[3] !== 0) { // If alpha channel is not 0 (transparent)
-                //console.log(overlayImageFilenames[i]);
-                document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
-                isNonTransparentFound = true;
-                lastNonTransparentImageIndex = i; // Update the last non-transparent image index
-            } else {
-                document.querySelectorAll('.overlayImage')[i].style.display = 'none'; // Hide this image if not hovered
+
+            // Assuming each overlay image has the same original size, adjust as needed
+            const originalWidth = overlays[i].naturalWidth;
+            const originalHeight = overlays[i].naturalHeight;
+
+            // Calculate the scale factor to maintain aspect ratio
+            const scaleWidth = canvas.width / originalWidth;
+            const scaleHeight = canvas.height / originalHeight;
+            const scale = Math.min(scaleWidth, scaleHeight);
+
+            // Calculate the centered position for the image
+            const scaledWidth = originalWidth * scale;
+            const scaledHeight = originalHeight * scale;
+            const offsetX = (canvas.width - scaledWidth) / 2;
+            const offsetY = (canvas.height - scaledHeight) / 2;
+
+            // Draw the image scaled and centered on the off-screen canvas
+            ctx.drawImage(overlays[i], offsetX, offsetY, scaledWidth, scaledHeight);
+
+            // Adjust the mouse coordinates for the scaled image
+            const adjustedX = x - offsetX;
+            const adjustedY = y - offsetY;
+
+            if (adjustedX >= 0 && adjustedX <= scaledWidth && adjustedY >= 0 && adjustedY <= scaledHeight) {
+                // Only check the pixel if the mouse is within the bounds of the scaled image
+                const pixel = ctx.getImageData(adjustedX, adjustedY, 1, 1).data;
+
+                if (!isNonTransparentFound && pixel[3] !== 0) {
+                    document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
+                    isNonTransparentFound = true;
+                    lastNonTransparentImageIndex = i; // Update the last non-transparent image index
+                } else {
+                    document.querySelectorAll('.overlayImage')[i].style.display = 'none'; // Hide this image if not hovered
+                }
             }
         }
 
-        // If no non-transparent pixel was found, reset the last index
         if (!isNonTransparentFound) {
-            lastNonTransparentImageIndex = -1;
+            lastNonTransparentImageIndex = -1; // Reset if no non-transparent pixel was found
         }
     }
+
 
     // New showToast function
     function showToast(message) {
