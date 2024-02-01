@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let lastNonTransparentImageIndex = -1; // To keep track of the last non-transparent image
 
     const imageContainer = document.getElementById('imageContainer');
+    let containerRect = imageContainer.getBoundingClientRect();
+    // Assume `overlays` is an array of image elements and `overlayElements` is an array of corresponding DOM elements
+    let preProcessedOverlays = [];
 
     // Create and append the base image to the container directly
     const baseImg = document.createElement('img');
@@ -37,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
     baseImg.style.zIndex = 1; // Ensure the base image is at the bottom
     imageContainer.appendChild(baseImg);
 
+    let overlayElements = [];
     overlayImageFilenames.forEach((filename, index) => {
         const img = document.createElement('img');
         img.src = filename;
@@ -44,7 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
         img.style.zIndex = index + 2; // Adjust z-index as necessary
         img.style.display = 'none'; // Start with overlay images hidden
         imageContainer.appendChild(img);
+        overlayElements.push(img);
     });
+
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -60,9 +66,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.body.appendChild(canvas);
 
+
+
+
     // Function to adjust canvas size
     function resizeCanvas() {
-        const containerRect = imageContainer.getBoundingClientRect();
+        containerRect = imageContainer.getBoundingClientRect();
         canvas.width = containerRect.width;
         canvas.height = containerRect.height;
     }
@@ -79,8 +88,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     let loadedOverlays = 0;
-    overlays.forEach(img => {
+    overlays.forEach((img, index) => {
         img.onload = () => {
+            preProcessOverlays(img, index);
             if (++loadedOverlays === overlays.length) {
                 setupMouseHover();
             }
@@ -113,61 +123,64 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    function checkPixelColor(x, y) {
-        const startTime = performance.now(); // Start timing
+    // Pre-process overlays
+    function preProcessOverlays(overlay, index) {
+        const offScreenCanvas = document.createElement('canvas');
+        const ctx = offScreenCanvas.getContext('2d');
 
-        lastNonTransparentImageIndex = -1; // Reset if no non-transparent pixel was found
+        offScreenCanvas.width = overlay.naturalWidth;
+        offScreenCanvas.height = overlay.naturalHeight;
+
+        ctx.drawImage(overlay, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+        preProcessedOverlays[index] = { imageData, ctx };
+
+        console.log(`Pre-processed overlay ${index}:`, preProcessedOverlays[index]);
+    }
+
+    // Adjusted function to use pre-processed data
+    function checkPixelColor(x, y) {
+        const startTime = performance.now();
+
+        lastNonTransparentImageIndex = -1;
 
         const containerRect = imageContainer.getBoundingClientRect();
-
-        canvas.width = containerRect.width;
-        canvas.height = containerRect.height;
-
-        // loop to hide all images
-        for (let i = overlays.length - 1; i >= 0; i--) {
-            document.querySelectorAll('.overlayImage')[i].style.display = 'none';
+        if (canvas.width !== containerRect.width || canvas.height !== containerRect.height) {
+            canvas.width = containerRect.width;
+            canvas.height = containerRect.height;
         }
 
         for (let i = overlays.length - 1; i >= 0; i--) {
-            // Clear the off-screen canvas for each overlay
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Assuming each overlay image has the same original size, adjust as needed
-            const originalWidth = overlays[i].naturalWidth;
-            const originalHeight = overlays[i].naturalHeight;
-
-            // Calculate the scale factor to maintain aspect ratio
-            const scaleWidth = canvas.width / originalWidth;
-            const scaleHeight = canvas.height / originalHeight;
-            const scale = Math.min(scaleWidth, scaleHeight);
-
-            // Calculate the centered position for the image
-            const scaledWidth = originalWidth * scale;
-            const scaledHeight = originalHeight * scale;
+            const overlay = overlays[i];
+            const preProcessed = preProcessedOverlays[i];
+            const scale = Math.min(canvas.width / overlay.naturalWidth, canvas.height / overlay.naturalHeight);
+            const scaledWidth = overlay.naturalWidth * scale;
+            const scaledHeight = overlay.naturalHeight * scale;
             const offsetX = (canvas.width - scaledWidth) / 2;
             const offsetY = (canvas.height - scaledHeight) / 2;
 
-            // Draw the image scaled and centered on the off-screen canvas
-            ctx.drawImage(overlays[i], offsetX, offsetY, scaledWidth, scaledHeight);
+            const adjustedX = Math.floor((x - offsetX) / scale);
+            const adjustedY = Math.floor((y - offsetY) / scale);
 
-            // Adjust the mouse coordinates for the scaled image
-            const adjustedX = x - offsetX;
-            const adjustedY = y - offsetY;
+            if (adjustedX < 0 || adjustedX >= preProcessed.ctx.canvas.width || adjustedY < 0 || adjustedY >= preProcessed.ctx.canvas.height) {
+                continue; // Skip this iteration early
+            }
 
-            if (adjustedX >= 0 && adjustedX <= scaledWidth && adjustedY >= 0 && adjustedY <= scaledHeight) {
-                // Only check the pixel if the mouse is within the bounds of the scaled image
-                const pixel = ctx.getImageData(adjustedX, adjustedY, 1, 1).data;
+            const pixelIndex = (adjustedY * preProcessed.ctx.canvas.width + adjustedX) * 4;
+            const pixel = preProcessed.imageData.data.slice(pixelIndex, pixelIndex + 4);
 
-                if (pixel[3] !== 0) {
-                    document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
-                    lastNonTransparentImageIndex = i; // Update the last non-transparent image index
-                    break;
-                }
+            if (pixel[3] !== 0) { // Check alpha value
+                overlayElements[i].style.display = '';
+                lastNonTransparentImageIndex = i;
+                break;
+            } else {
+                overlayElements[i].style.display = 'none';
             }
         }
 
-        const endTime = performance.now(); // End timing
-        console.log(`checkPixelColor execution time: ${endTime - startTime} milliseconds`);
+        const endTime = performance.now();
+        console.log(`checkPixelColor execution time with pre-processing: ${endTime - startTime} milliseconds`);
     }
 
     // New showToast function
