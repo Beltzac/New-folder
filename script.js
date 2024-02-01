@@ -1,114 +1,138 @@
-const baseImageFilename = "moveis meu site2.png"; // Base image
+const baseImageFilename = "imagens/todos.png"; // Base image
 
 const overlayImages =
 [
     {
-        "nomeImagem": "pc colorido",
-        "arquivo": "pc colorido.png",
-        "urlLink": "https://example.com/images/pc%20colorido.png"
+        "nomeImagem": "Tela",
+        "arquivo": "imagens/tela.png",
+        "urlLink": "https://example.com/images/tela.png"
     },
     {
-        "nomeImagem": "luminaria colorido",
-        "arquivo": "luminaria colorido.png",
-        "urlLink": "https://example.com/images/luminaria%20colorido.png"
+        "nomeImagem": "PC",
+        "arquivo": "imagens/pc.png",
+        "urlLink": "https://example.com/images/pc.png"
     },
     {
-        "nomeImagem": "tela pc colorida",
-        "arquivo": "tela pc colorida.png",
-        "urlLink": "https://example.com/images/tela%20pc%20colorida.png"
+        "nomeImagem": "Iluminação",
+        "arquivo": "imagens/iluminacao.png",
+        "urlLink": "https://example.com/images/iluminação.png"
     },
     {
-        "nomeImagem": "arqui trecos colorido",
-        "arquivo": "arqui trecos colorido.png",
-        "urlLink": "https://example.com/images/arqui%20trecos%20colorido.png"
+        "nomeImagem": "Aparador",
+        "arquivo": "imagens/aparador.png",
+        "urlLink": "https://example.com/images/aparador.png"
     },
     {
-        "nomeImagem": "star wars preto e branco",
-        "arquivo": "star wars preto e branco.png",
-        "urlLink": "https://example.com/images/star%20wars%20preto%20e%20branco.png"
+        "nomeImagem": "Arquitetura",
+        "arquivo": "imagens/arqui.png",
+        "urlLink": "https://example.com/images/arqui.png"
     },
     {
-        "nomeImagem": "celular colorido",
-        "arquivo": "celular colorido.png",
-        "urlLink": "https://example.com/images/celular%20colorido.png"
+        "nomeImagem": "Celular",
+        "arquivo": "imagens/celular.png",
+        "urlLink": "https://example.com/images/celular.png"
     },
     {
-        "nomeImagem": "deco colorido",
-        "arquivo": "deco colorido.png",
-        "urlLink": "https://example.com/images/deco%20colorido.png"
+        "nomeImagem": "Curtas",
+        "arquivo": "imagens/curtas.png",
+        "urlLink": "https://example.com/images/curtas.png"
     },
     {
-        "nomeImagem": "escritos colorido",
-        "arquivo": "escritos colorido.png",
-        "urlLink": "https://example.com/images/escritos%20colorido.png"
+        "nomeImagem": "Decoração",
+        "arquivo": "imagens/decoracao.png",
+        "urlLink": "https://example.com/images/decoração.png"
     },
     {
-        "nomeImagem": "fone colorido",
-        "arquivo": "fone colorido.png",
-        "urlLink": "https://example.com/images/fone%20colorido.png"
+        "nomeImagem": "Escritos",
+        "arquivo": "imagens/escritos.png",
+        "urlLink": "https://example.com/images/escritos.png"
     },
     {
-        "nomeImagem": "camera colorido",
-        "arquivo": "camera colorido.png",
-        "urlLink": "https://example.com/images/camera%20colorido.png"
+        "nomeImagem": "Fone",
+        "arquivo": "imagens/fone.png",
+        "urlLink": "https://example.com/images/fone.png"
     },
     {
-        "nomeImagem": "ilustra colorido",
-        "arquivo": "ilustra colorido.png",
-        "urlLink": "https://example.com/images/ilustra%20colorido.png"
+        "nomeImagem": "Camera",
+        "arquivo": "imagens/camera.png",
+        "urlLink": "https://example.com/images/camera.png"
     },
     {
-        "nomeImagem": "livros filosofia colorido",
-        "arquivo": "livros filosofia colorido.png",
-        "urlLink": "https://example.com/images/livros%20filosofia%20colorido.png"
+        "nomeImagem": "Ilustrações",
+        "arquivo": "imagens/ilustracoes.png",
+        "urlLink": "https://example.com/images/ilustrações.png"
     },
     {
-        "nomeImagem": "livros no chao",
-        "arquivo": "livros no chao.png",
-        "urlLink": "https://example.com/images/livros%20no%20chao.png"
+        "nomeImagem": "Jogos",
+        "arquivo": "imagens/jogos.png",
+        "urlLink": "https://example.com/images/jogos.png"
     },
     {
-        "nomeImagem": "maquina de escrever colorida",
-        "arquivo": "maquina de escrever colorida.png",
-        "urlLink": "https://example.com/images/maquina%20de%20escrever%20colorida.png"
+        "nomeImagem": "Livros de Arquitetura",
+        "arquivo": "imagens/livros_de_arqui.png",
+        "urlLink": "https://example.com/images/livros_de_arqui.png"
     },
     {
-        "nomeImagem": "mesa colorida",
-        "arquivo": "mesa colorida.png",
-        "urlLink": "https://example.com/images/mesa%20colorida.png"
+        "nomeImagem": "Livros de Arquitetura e Design",
+        "arquivo": "imagens/livros_de_arqui_e_design.png",
+        "urlLink": "https://example.com/images/livros_de_arqui_e_design.png"
     },
     {
-        "nomeImagem": "mesa vinil colorida",
-        "arquivo": "mesa vinil colorida.png",
-        "urlLink": "https://example.com/images/mesa%20vinil%20colorida.png"
+        "nomeImagem": "Livros de Filosofia",
+        "arquivo": "imagens/livros_filosofia.png",
+        "urlLink": "https://example.com/images/livros_filosofia.png"
     },
     {
-        "nomeImagem": "movel planta colorido",
-        "arquivo": "movel planta colorido.png",
-        "urlLink": "https://example.com/images/movel%20planta%20colorido.png"
+        "nomeImagem": "Margot",
+        "arquivo": "imagens/margot.png",
+        "urlLink": "https://example.com/images/margot.png"
     },
     {
-        "nomeImagem": "discos colorido",
-        "arquivo": "discos colorido.png",
-        "urlLink": "https://example.com/images/discos%20colorido.png"
+        "nomeImagem": "Mesa",
+        "arquivo": "imagens/mesa.png",
+        "urlLink": "https://example.com/images/mesa.png"
     },
     {
-        "nomeImagem": "vitrola colorida",
-        "arquivo": "vitrola colorida.png",
-        "urlLink": "https://example.com/images/vitrola%20colorida.png"
+        "nomeImagem": "Movel Planta",
+        "arquivo": "imagens/movel_planta.png",
+        "urlLink": "https://example.com/images/movel_planta.png"
     },
     {
-        "nomeImagem": "conteole de video game colorido",
-        "arquivo": "conteole de video game colorido.png",
-        "urlLink": "https://example.com/images/conteole%20de%20video%20game%20colorido.png"
+        "nomeImagem": "Plantas Internas",
+        "arquivo": "imagens/plantas_internas.png",
+        "urlLink": "https://example.com/images/plantas_internas.png"
     },
     {
-        "nomeImagem": "cadeira preta e branca",
-        "arquivo": "cadeira preta e branca.png",
-        "urlLink": "https://example.com/images/cadeira%20preta%20e%20branca.png"
-    }
+        "nomeImagem": "Star Wars",
+        "arquivo": "imagens/star_wars.png",
+        "urlLink": "https://example.com/images/star_wars.png"
+    },
+    {
+        "nomeImagem": "Teclado",
+        "arquivo": "imagens/tecl.png",
+        "urlLink": "https://example.com/images/tecl.png"
+    },
+    {
+        "nomeImagem": "Vinis",
+        "arquivo": "imagens/vinis.png",
+        "urlLink": "https://example.com/images/vinis.png"
+    },
+    {
+        "nomeImagem": "Vitrola",
+        "arquivo": "imagens/vitrola.png",
+        "urlLink": "https://example.com/images/vitrola.png"
+    },
+    {
+        "nomeImagem": "Cadeira",
+        "arquivo": "imagens/cadeira.png",
+        "urlLink": "https://example.com/images/cadeira.png"
+    },
+    {
+        "nomeImagem": "Livros de Poesia",
+        "arquivo": "imagens/livros_poesia.png",
+        "urlLink": "https://example.com/images/livros_poesia.png"
+    },
 ]
-
 
 document.addEventListener("DOMContentLoaded", function() {
 
