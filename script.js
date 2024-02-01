@@ -198,6 +198,8 @@ document.addEventListener("DOMContentLoaded", function() {
         imageContainer.addEventListener('mousemove', function(e) {
             if (lastNonTransparentImageIndex >= 0)
                 showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.clientX, e.clientY);
+            else
+                showName(null);
         });
 
         // Setup click event listener
