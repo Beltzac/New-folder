@@ -1,14 +1,16 @@
 const baseImageFilename = "moveis meu site2.png"; // Base image
 
 const overlayImageFilenames = [
-   // "moveis meu site2.png", // Base image
+    "pc colorido.png",
+    "luminaria colorido.png",
+    "tela pc colorida.png",
     "arqui trecos colorido.png",
+    "star wars preto e branco.png",
     "celular colorido.png",
-    "conteole de video game colorido.png",
     "deco colorido.png",
-    "discos colorido.png",
     "escritos colorido.png",
     "fone colorido.png",
+    "camera colorido.png",
     "ilustra colorido.png",
     "livros filosofia colorido.png",
     "livros no chao.png",
@@ -16,9 +18,9 @@ const overlayImageFilenames = [
     "mesa colorida.png",
     "mesa vinil colorida.png",
     "movel planta colorido.png",
-    "pc colorido.png",
-    "tela pc colorida.png",
+    "discos colorido.png",
     "vitrola colorida.png",
+    "conteole de video game colorido.png",
     "cadeira preta e branca.png",
 ];
 
@@ -53,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function() {
     canvas.style.top = '0';
     canvas.style.left = '0';
     canvas.style.pointerEvents = 'none'; // Ignore mouse events on the canvas
+    //hide canvas
+    canvas.style.display = 'none';
 
     document.body.appendChild(canvas);
 
@@ -84,16 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function setupMouseHover() {
-        // imageContainer.addEventListener('mousemove', function(e) {
-        //     const rect = imageContainer.getBoundingClientRect();
-        //     const scaleX = canvas.width / rect.width; // Calculate the scale factor for X
-        //     const scaleY = canvas.height / rect.height; // Calculate the scale factor for Y
-        //     const x = (e.clientX - rect.left) * scaleX; // Translate mouse x
-        //     const y = (e.clientY - rect.top) * scaleY; // Translate mouse y
-        //     checkPixelColor(x, y);
-        //     console.log(x, y);
-        // });
-
         imageContainer.addEventListener('mousemove', function(e) {
             const rect = imageContainer.getBoundingClientRect();
             // Determine the scaling mode: width-based or height-based
@@ -103,7 +97,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const x = (e.clientX - rect.left - offsetX) / scale;
             const y = (e.clientY - rect.top - offsetY) / scale;
             checkPixelColor(x, y);
-            //console.log(x, y);
+        });
+
+        imageContainer.addEventListener('mousemove', function(e) {
+            showName(overlayImageFilenames[lastNonTransparentImageIndex], e.clientX, e.clientY);
         });
 
         // Setup click event listener
@@ -116,35 +113,18 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // function checkPixelColor(x, y) {
-    //     let isNonTransparentFound = false;
-    //     for (let i = overlays.length - 1; i >= 0; i--) {
-    //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //         ctx.drawImage(overlays[i], 0, 0);
-    //         const pixel = ctx.getImageData(x, y, 1, 1).data;
-    //         if (!isNonTransparentFound && pixel[3] !== 0) {
-    //             document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
-    //             isNonTransparentFound = true;
-    //             lastNonTransparentImageIndex = i; // Update the last non-transparent image index
-    //         } else {
-    //             document.querySelectorAll('.overlayImage')[i].style.display = 'none'; // Hide this image if not hovered
-    //         }
-    //     }
-
-    //     // If no non-transparent pixel was found, reset the last index
-    //     if (!isNonTransparentFound) {
-    //         lastNonTransparentImageIndex = -1;
-    //     }
-    // }
-
     function checkPixelColor(x, y) {
-        let isNonTransparentFound = false;
-        // const canvas = document.createElement('canvas');
-        // const ctx = canvas.getContext('2d');
+        lastNonTransparentImageIndex = -1; // Reset if no non-transparent pixel was found
+
         const containerRect = imageContainer.getBoundingClientRect();
 
         canvas.width = containerRect.width;
         canvas.height = containerRect.height;
+
+        // loop to hide all images
+        for (let i = overlays.length - 1; i >= 0; i--) {
+            document.querySelectorAll('.overlayImage')[i].style.display = 'none';
+        }
 
         for (let i = overlays.length - 1; i >= 0; i--) {
             // Clear the off-screen canvas for each overlay
@@ -176,21 +156,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Only check the pixel if the mouse is within the bounds of the scaled image
                 const pixel = ctx.getImageData(adjustedX, adjustedY, 1, 1).data;
 
-                if (!isNonTransparentFound && pixel[3] !== 0) {
+                if (pixel[3] !== 0) {
                     document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
-                    isNonTransparentFound = true;
                     lastNonTransparentImageIndex = i; // Update the last non-transparent image index
-                } else {
-                    document.querySelectorAll('.overlayImage')[i].style.display = 'none'; // Hide this image if not hovered
+                    return;
                 }
             }
         }
-
-        if (!isNonTransparentFound) {
-            lastNonTransparentImageIndex = -1; // Reset if no non-transparent pixel was found
-        }
     }
-
 
     // New showToast function
     function showToast(message) {
@@ -212,5 +185,26 @@ document.addEventListener("DOMContentLoaded", function() {
             toast.style.opacity = 0;
             setTimeout(() => toastContainer.removeChild(toast), 500); // Ensure fade out completes
         }, 3000);
+    }
+
+    function showName(name, x, y) {
+        const nameContainer = document.getElementById('objectDescription');
+
+        if (!name) {
+            nameContainer.style.display = 'none';
+            return;
+        }
+
+        // Set the text content
+        nameContainer.textContent = name;
+
+        // Position the container at the mouse coordinates with an offset
+        //at the center bottom of the container
+
+        nameContainer.style.left = x - nameContainer.offsetWidth / 2 + 'px';
+        nameContainer.style.top = y + -50 + 'px';
+
+        // Make the container visible
+        nameContainer.style.display = 'block';
     }
 });

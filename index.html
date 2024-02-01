@@ -50,9 +50,24 @@
         opacity: 0;
         transition: opacity 0.5s;
     }
+
+    /* make objectDescription ignore pointer events */
+    #objectDescription {
+        pointer-events: none;
+        position: absolute;
+        display: none;
+        z-index: 1000;
+        background-color: white;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 20px;
+    }
+
+
     </style>
 </head>
 <body>
+    <div id="objectDescription"></div>
     <div id="toastContainer"></div>
     <div id="imageContainer"></div>
     <script src="script.js"></script>
