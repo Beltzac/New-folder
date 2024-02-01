@@ -1,28 +1,114 @@
 const baseImageFilename = "moveis meu site2.png"; // Base image
 
-const overlayImageFilenames = [
-    "pc colorido.png",
-    "luminaria colorido.png",
-    "tela pc colorida.png",
-    "arqui trecos colorido.png",
-    "star wars preto e branco.png",
-    "celular colorido.png",
-    "deco colorido.png",
-    "escritos colorido.png",
-    "fone colorido.png",
-    "camera colorido.png",
-    "ilustra colorido.png",
-    "livros filosofia colorido.png",
-    "livros no chao.png",
-    "maquina de escrever colorida.png",
-    "mesa colorida.png",
-    "mesa vinil colorida.png",
-    "movel planta colorido.png",
-    "discos colorido.png",
-    "vitrola colorida.png",
-    "conteole de video game colorido.png",
-    "cadeira preta e branca.png",
-];
+const overlayImages =
+[
+    {
+        "nomeImagem": "pc colorido",
+        "arquivo": "pc colorido.png",
+        "urlLink": "https://example.com/images/pc%20colorido.png"
+    },
+    {
+        "nomeImagem": "luminaria colorido",
+        "arquivo": "luminaria colorido.png",
+        "urlLink": "https://example.com/images/luminaria%20colorido.png"
+    },
+    {
+        "nomeImagem": "tela pc colorida",
+        "arquivo": "tela pc colorida.png",
+        "urlLink": "https://example.com/images/tela%20pc%20colorida.png"
+    },
+    {
+        "nomeImagem": "arqui trecos colorido",
+        "arquivo": "arqui trecos colorido.png",
+        "urlLink": "https://example.com/images/arqui%20trecos%20colorido.png"
+    },
+    {
+        "nomeImagem": "star wars preto e branco",
+        "arquivo": "star wars preto e branco.png",
+        "urlLink": "https://example.com/images/star%20wars%20preto%20e%20branco.png"
+    },
+    {
+        "nomeImagem": "celular colorido",
+        "arquivo": "celular colorido.png",
+        "urlLink": "https://example.com/images/celular%20colorido.png"
+    },
+    {
+        "nomeImagem": "deco colorido",
+        "arquivo": "deco colorido.png",
+        "urlLink": "https://example.com/images/deco%20colorido.png"
+    },
+    {
+        "nomeImagem": "escritos colorido",
+        "arquivo": "escritos colorido.png",
+        "urlLink": "https://example.com/images/escritos%20colorido.png"
+    },
+    {
+        "nomeImagem": "fone colorido",
+        "arquivo": "fone colorido.png",
+        "urlLink": "https://example.com/images/fone%20colorido.png"
+    },
+    {
+        "nomeImagem": "camera colorido",
+        "arquivo": "camera colorido.png",
+        "urlLink": "https://example.com/images/camera%20colorido.png"
+    },
+    {
+        "nomeImagem": "ilustra colorido",
+        "arquivo": "ilustra colorido.png",
+        "urlLink": "https://example.com/images/ilustra%20colorido.png"
+    },
+    {
+        "nomeImagem": "livros filosofia colorido",
+        "arquivo": "livros filosofia colorido.png",
+        "urlLink": "https://example.com/images/livros%20filosofia%20colorido.png"
+    },
+    {
+        "nomeImagem": "livros no chao",
+        "arquivo": "livros no chao.png",
+        "urlLink": "https://example.com/images/livros%20no%20chao.png"
+    },
+    {
+        "nomeImagem": "maquina de escrever colorida",
+        "arquivo": "maquina de escrever colorida.png",
+        "urlLink": "https://example.com/images/maquina%20de%20escrever%20colorida.png"
+    },
+    {
+        "nomeImagem": "mesa colorida",
+        "arquivo": "mesa colorida.png",
+        "urlLink": "https://example.com/images/mesa%20colorida.png"
+    },
+    {
+        "nomeImagem": "mesa vinil colorida",
+        "arquivo": "mesa vinil colorida.png",
+        "urlLink": "https://example.com/images/mesa%20vinil%20colorida.png"
+    },
+    {
+        "nomeImagem": "movel planta colorido",
+        "arquivo": "movel planta colorido.png",
+        "urlLink": "https://example.com/images/movel%20planta%20colorido.png"
+    },
+    {
+        "nomeImagem": "discos colorido",
+        "arquivo": "discos colorido.png",
+        "urlLink": "https://example.com/images/discos%20colorido.png"
+    },
+    {
+        "nomeImagem": "vitrola colorida",
+        "arquivo": "vitrola colorida.png",
+        "urlLink": "https://example.com/images/vitrola%20colorida.png"
+    },
+    {
+        "nomeImagem": "conteole de video game colorido",
+        "arquivo": "conteole de video game colorido.png",
+        "urlLink": "https://example.com/images/conteole%20de%20video%20game%20colorido.png"
+    },
+    {
+        "nomeImagem": "cadeira preta e branca",
+        "arquivo": "cadeira preta e branca.png",
+        "urlLink": "https://example.com/images/cadeira%20preta%20e%20branca.png"
+    }
+]
+
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -41,9 +127,9 @@ document.addEventListener("DOMContentLoaded", function() {
     imageContainer.appendChild(baseImg);
 
     let overlayElements = [];
-    overlayImageFilenames.forEach((filename, index) => {
+    overlayImages.forEach((overlay, index) => {
         const img = document.createElement('img');
-        img.src = filename;
+        img.src = overlay.arquivo;
         img.classList.add('imageLayer', 'overlayImage'); // Add a class for overlays
         img.style.zIndex = index + 2; // Adjust z-index as necessary
         img.style.display = 'none'; // Start with overlay images hidden
@@ -81,9 +167,9 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener('resize', resizeCanvas);
 
     // Preload overlay images
-    const overlays = overlayImageFilenames.map(filename => {
+    const overlays = overlayImages.map(overlay => {
         const img = new Image();
-        img.src = filename;
+        img.src = overlay.arquivo;
         return img;
     });
 
@@ -110,15 +196,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         imageContainer.addEventListener('mousemove', function(e) {
-            showName(overlayImageFilenames[lastNonTransparentImageIndex], e.clientX, e.clientY);
+            if (lastNonTransparentImageIndex >= 0)
+                showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.clientX, e.clientY);
         });
 
         // Setup click event listener
         imageContainer.addEventListener('click', function() {
             if (lastNonTransparentImageIndex >= 0) {
-                var filename = overlayImageFilenames[lastNonTransparentImageIndex];
-                console.log(filename);
-                showToast(filename); // Show toast with the filename
+                var filename = overlayImages[lastNonTransparentImageIndex].nomeImagem;
+                //console.log(filename);
+                //showToast(filename); // Show toast with the filename
+
+                // Redirect to the URL in the same tab
+                var url = overlayImages[lastNonTransparentImageIndex].urlLink;
+                window.location.href = url;
             }
         });
     }
