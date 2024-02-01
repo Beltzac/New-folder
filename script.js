@@ -114,6 +114,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function checkPixelColor(x, y) {
+        const startTime = performance.now(); // Start timing
+
         lastNonTransparentImageIndex = -1; // Reset if no non-transparent pixel was found
 
         const containerRect = imageContainer.getBoundingClientRect();
@@ -159,10 +161,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (pixel[3] !== 0) {
                     document.querySelectorAll('.overlayImage')[i].style.display = ''; // Show this image
                     lastNonTransparentImageIndex = i; // Update the last non-transparent image index
-                    return;
+                    break;
                 }
             }
         }
+
+        const endTime = performance.now(); // End timing
+        console.log(`checkPixelColor execution time: ${endTime - startTime} milliseconds`);
     }
 
     // New showToast function
