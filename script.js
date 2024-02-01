@@ -220,10 +220,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         imageContainer.addEventListener('mousemove', function(e) {
-            if (lastNonTransparentImageIndex >= 0)
+            if (lastNonTransparentImageIndex >= 0){
+                changeCursor(true);
                 showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.clientX, e.clientY);
-            else
+            }
+            else{
+                changeCursor(false);
                 showName(null);
+            }
         });
 
         // Setup click event listener
@@ -341,5 +345,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Make the container visible
         nameContainer.style.display = 'block';
+    }
+
+    function changeCursor(enabled) {
+        imageContainer.style.cursor = enabled ? 'pointer' : 'default';
     }
 });
