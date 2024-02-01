@@ -340,8 +340,21 @@ document.addEventListener("DOMContentLoaded", function() {
         // Position the container at the mouse coordinates with an offset
         //at the center bottom of the container
 
-        nameContainer.style.left = x - nameContainer.offsetWidth / 2 + 'px';
-        nameContainer.style.top = y + -50 + 'px';
+        //if it would be out of the screen
+        //put it at the bottom instead
+
+        var halfDescriptionHeight = nameContainer.offsetHeight / 2;
+        var halfDescriptionWidth = nameContainer.offsetWidth / 2;
+        var verticalOffset = 50;
+        var borderOffset = 10;
+
+        if (y - verticalOffset - halfDescriptionHeight - borderOffset < 0){
+            nameContainer.style.left = x - halfDescriptionWidth + 'px';
+            nameContainer.style.top = y - halfDescriptionHeight + verticalOffset + 'px';
+        }else{
+            nameContainer.style.left = x - halfDescriptionWidth + 'px';
+            nameContainer.style.top = y - halfDescriptionHeight - verticalOffset + 'px';
+        }
 
         // Make the container visible
         nameContainer.style.display = 'block';
