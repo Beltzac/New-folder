@@ -192,13 +192,13 @@
 
             function setupMouseHover() {
                 imageContainer.addEventListener('mousemove', function (e) {
-                    checkPixelColor(overlayElements, e.clientX, e.clientY);
+                    checkPixelColor(overlayElements, e.offsetX, e.offsetY);
                 });
 
                 imageContainer.addEventListener('mousemove', function (e) {
                     if (lastNonTransparentImageIndex >= 0) {
                         changeCursor(true);
-                        showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.clientX, e.clientY);
+                        showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.offsetX, e.offsetY);
                     }
                     else {
                         changeCursor(false);
@@ -318,7 +318,7 @@
         html {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+
             /* Prevents scrolling if images go beyond the viewport */
             height: 100%;
             justify-content: center;
@@ -327,9 +327,13 @@
             /* Optional: in case the images don't cover the whole viewport */
         }
 
-        #imageContainer, .imageLayer, canvas {
-            aspect-ratio: 2492 / 872;
+        #imageContainer {
+
+        }
+
+        .imageLayer, canvas {
             position: absolute;
+            aspect-ratio: 2492 / 872;
         }
 
         /* Toast container */
