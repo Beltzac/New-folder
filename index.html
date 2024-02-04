@@ -155,10 +155,6 @@
 
             const imageContainer = document.getElementById('imageContainer');
 
-            // Create a canvas element
-            const canvas = setupCanvas(imageContainer);
-
-            // Assume `overlays` is an array of image elements and `overlayElements` is an array of corresponding DOM elements
             let preProcessedOverlays = [];
 
             // Function to create an image and append it to the container
@@ -196,14 +192,7 @@
 
             function setupMouseHover() {
                 imageContainer.addEventListener('mousemove', function (e) {
-                    const rect = imageContainer.getBoundingClientRect();
-                    // Determine the scaling mode: width-based or height-based
-                    const scale = Math.min(rect.width / canvas.width, rect.height / canvas.height);
-                    const offsetX = (rect.width - canvas.width * scale) / 2; // Centering offset for width
-                    const offsetY = (rect.height - canvas.height * scale) / 2; // Centering offset for height
-                    const x = (e.clientX - rect.left - offsetX) / scale;
-                    const y = (e.clientY - rect.top - offsetY) / scale;
-                    checkPixelColor(overlayElements, x, y);
+                    checkPixelColor(overlayElements, e.clientX, e.clientY);
                 });
 
                 imageContainer.addEventListener('mousemove', function (e) {
@@ -245,29 +234,11 @@
             function checkPixelColor(overlayElements, x, y) {
                 lastNonTransparentImageIndex = -1;
 
-                const containerRect = imageContainer.getBoundingClientRect();
-                if (canvas.width !== containerRect.width || canvas.height !== containerRect.height) {
-                    canvas.width = containerRect.width;
-                    canvas.height = containerRect.height;
-                }
-
                 for (let i = overlayElements.length - 1; i >= 0; i--) {
                     const overlay = overlayElements[i];
                     const preProcessed = preProcessedOverlays[i];
-                    const scale = Math.min(canvas.width / overlay.naturalWidth, canvas.height / overlay.naturalHeight);
-                    const scaledWidth = overlay.naturalWidth * scale;
-                    const scaledHeight = overlay.naturalHeight * scale;
-                    const offsetX = (canvas.width - scaledWidth) / 2;
-                    const offsetY = (canvas.height - scaledHeight) / 2;
 
-                    const adjustedX = Math.floor((x - offsetX) / scale);
-                    const adjustedY = Math.floor((y - offsetY) / scale);
-
-                    if (adjustedX < 0 || adjustedX >= preProcessed.ctx.canvas.width || adjustedY < 0 || adjustedY >= preProcessed.ctx.canvas.height) {
-                        continue; // Skip this iteration early
-                    }
-
-                    const pixelIndex = (adjustedY * preProcessed.ctx.canvas.width + adjustedX) * 4;
+                    const pixelIndex = (y * preProcessed.ctx.canvas.width + x) * 4;
                     const pixel = preProcessed.imageData.data.slice(pixelIndex, pixelIndex + 4);
 
                     if (pixel[3] !== 0) { // Check alpha value
@@ -339,32 +310,6 @@
             function changeCursor(enabled) {
                 imageContainer.style.cursor = enabled ? 'pointer' : 'default';
             }
-
-            // Function to adjust canvas size
-            function resizeCanvas(imageContainer, canvas) {
-                let containerRect = imageContainer.getBoundingClientRect();
-                canvas.width = containerRect.width;
-                canvas.height = containerRect.height;
-            }
-
-            function setupCanvas(imageContainer) {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                canvas.style.position = 'absolute';
-                canvas.style.top = '0';
-                canvas.style.left = '0';
-                canvas.style.pointerEvents = 'none';
-                canvas.style.display = 'none';
-
-                console.log('Canvas created:', canvas.width, canvas.height);
-
-                // Call resizeCanvas on load and window resize
-                resizeCanvas(imageContainer, canvas);
-                window.addEventListener('resize', function(){ resizeCanvas(imageContainer, canvas) });
-
-                return canvas;
-            }
         });
 
     </script>
@@ -382,26 +327,9 @@
             /* Optional: in case the images don't cover the whole viewport */
         }
 
-        #imageContainer {
-            /* Remove fixed width and height, add max values instead */
-            max-width: 100%;
-            max-height: 100vh;
-            position: relative;
-            /* Maintain aspect ratio */
+        #imageContainer, .imageLayer, canvas {
             aspect-ratio: 2492 / 872;
-            /* Optional: center the container */
-            margin: auto;
-        }
-
-        .imageLayer,
-        canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            /* This ensures the images scale correctly within the container */
         }
 
         /* Toast container */
