@@ -182,12 +182,12 @@
                     loadedImages++;
 
                     if (loadedImages === overlayElements.length) {
-                        setupMouseHover();
+                        setupImagesEvents();
                     }
                 };
             });
 
-            function setupMouseHover() {
+            function setupImagesEvents() {
                 imageContainer.addEventListener('mousemove', function (e) {
                     checkPixelColor(overlayElements, e.offsetX, e.offsetY);
                 });
@@ -198,7 +198,6 @@
                     showName(imageName, e.offsetX, e.offsetY);
                 });
 
-                // Setup click event listener
                 imageContainer.addEventListener('click', function () {
                     if (lastNonTransparentImageIndex >= 0) {
                         var overlay = overlayImages[lastNonTransparentImageIndex];
