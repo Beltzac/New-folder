@@ -169,11 +169,8 @@
                 return img; // Return the image element for further use if necessary
             }
 
-            const baseImgSrc = baseUrl + baseImageFilename;
-            // Create and append the base image
-            createAndAppendImage(baseImgSrc, 1, true);
-
-            // Array to hold overlay elements for potential further manipulation
+            // Create images
+            createAndAppendImage(baseUrl + baseImageFilename, 1, true);
             let overlayElements = overlayImages.map((overlay, index) =>
                 createAndAppendImage(baseUrl + overlay.arquivo, index + 2, false)
             );
@@ -196,14 +193,9 @@
                 });
 
                 imageContainer.addEventListener('mousemove', function (e) {
-                    if (lastNonTransparentImageIndex >= 0) {
-                        changeCursor(true);
-                        showName(overlayImages[lastNonTransparentImageIndex].nomeImagem, e.offsetX, e.offsetY);
-                    }
-                    else {
-                        changeCursor(false);
-                        showName(null);
-                    }
+                    var imageName = overlayImages[lastNonTransparentImageIndex]?.nomeImagem;
+                    changeCursor(imageName);
+                    showName(imageName, e.offsetX, e.offsetY);
                 });
 
                 // Setup click event listener
@@ -251,7 +243,6 @@
                 }
             }
 
-            // New showToast function
             function showToast(message) {
                 const toastContainer = document.getElementById('toastContainer');
                 const toast = document.createElement('div');
@@ -285,21 +276,18 @@
                 nameContainer.textContent = name;
 
                 // Position the container at the mouse coordinates with an offset
-                //at the center bottom of the container
-
-                //if it would be out of the screen
-                //put it at the bottom instead
+                // at the center bottom of the container
+                // if it would be out of the screen put it at the bottom instead
 
                 var halfDescriptionHeight = nameContainer.offsetHeight / 2;
                 var halfDescriptionWidth = nameContainer.offsetWidth / 2;
                 var verticalOffset = 50;
                 var borderOffset = 10;
 
+                nameContainer.style.left = x - halfDescriptionWidth + 'px';
                 if (y - verticalOffset - halfDescriptionHeight - borderOffset < 0) {
-                    nameContainer.style.left = x - halfDescriptionWidth + 'px';
                     nameContainer.style.top = y - halfDescriptionHeight + verticalOffset + 'px';
                 } else {
-                    nameContainer.style.left = x - halfDescriptionWidth + 'px';
                     nameContainer.style.top = y - halfDescriptionHeight - verticalOffset + 'px';
                 }
 
@@ -318,17 +306,10 @@
         html {
             margin: 0;
             padding: 0;
-
-            /* Prevents scrolling if images go beyond the viewport */
             height: 100%;
             justify-content: center;
             align-items: center;
             background-color: #ffffff;
-            /* Optional: in case the images don't cover the whole viewport */
-        }
-
-        #imageContainer {
-
         }
 
         .imageLayer, canvas {
@@ -336,7 +317,6 @@
             aspect-ratio: 2492 / 872;
         }
 
-        /* Toast container */
         #toastContainer {
             position: fixed;
             bottom: 20px;
@@ -344,7 +324,6 @@
             z-index: 10000;
         }
 
-        /* Toast message */
         .toast {
             background-color: #333;
             color: white;
@@ -354,7 +333,6 @@
             transition: opacity 0.5s;
         }
 
-        /* make objectDescription ignore pointer events */
         #objectDescription {
             pointer-events: none;
             position: absolute;
@@ -365,7 +343,6 @@
             border-radius: 4px;
             font-size: 24px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            /*artsy font*/
             font-family: 'Courier';
         }
     </style>
