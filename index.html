@@ -2,11 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layered Image Display</title>
     <script>
-        const baseUrl = ""
+        const baseUrl = "https://beltzac.github.io/thalita-neres-home/"
         const baseImageFilename = "imagens/base.png"; // Base image
 
         const overlayImages =
@@ -170,7 +167,7 @@
             }
 
             // Create images
-            createAndAppendImage(baseUrl + baseImageFilename, 1, true);
+            const baseImage = createAndAppendImage(baseUrl + baseImageFilename, 1, true);
             let overlayElements = overlayImages.map((overlay, index) =>
                 createAndAppendImage(baseUrl + overlay.arquivo, index + 2, false)
             );
@@ -224,6 +221,19 @@
             // Adjusted function to use pre-processed data
             function checkPixelColor(overlayElements, x, y) {
                 lastNonTransparentImageIndex = -1;
+
+                // Scale the mouse coordinates to the canvas size
+                // So we can get the correct pixel from the pre-processed data
+
+                const boundingBox = baseImage.getBoundingClientRect();
+                const scale =  preProcessedOverlays[0].ctx.canvas.width / boundingBox.width;
+
+                x *= scale;
+                y *= scale;
+
+                //floor the values to get the correct pixel
+                x = Math.floor(x);
+                y = Math.floor(y);
 
                 for (let i = overlayElements.length - 1; i >= 0; i--) {
                     const overlay = overlayElements[i];
@@ -305,15 +315,15 @@
         html {
             margin: 0;
             padding: 0;
-            height: 100%;
             justify-content: center;
             align-items: center;
             background-color: #ffffff;
+          	overflow: hidden;
         }
 
         .imageLayer, canvas {
             position: absolute;
-            aspect-ratio: 2492 / 872;
+            height: 100%;
         }
 
         #toastContainer {
